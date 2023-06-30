@@ -1,22 +1,19 @@
-﻿using System;
-using System.Security.Cryptography;
-
-namespace RPSLS
+﻿namespace RPSLS
 {
     public class Program
     {
         static void Main(string[] args)
         {
             var random = new Random();
-
-            var computerNames = new List<string>();
-
+            
             int computerPoints = 0;
             int playerPoints = 0;
 
+
             Console.WriteLine("Welcome to Rock, Paper, Scissors, Lizard, Spock! \n");
-            Console.WriteLine("The rules ar obvious: \n");
-            Console.WriteLine("\t Scissors cuts Paper,\n" +
+
+            Console.WriteLine("The rules ar obvious: \n" +
+                              "\t Scissors cuts Paper,\n" +
                               "\t Paper covers Rock,\n" +
                               "\t Rock crushes Lizard,\n" +
                               "\t Lizard poisons Spock,\n" +
@@ -27,85 +24,49 @@ namespace RPSLS
                               "\t Spock vaporizes Rock,\n" +
                               "\t and as it always has, Rock crushes Scissors. \n");
            
-            Console.WriteLine("Input any number between 1 and 5 \n");
-            Console.WriteLine("1: Rock \n" +
+            Console.WriteLine("Input any number between 1 and 5 \n" +
+                              "1: Rock \n" +
                               "2: Paper\n" +
                               "3: Scissors\n" +
                               "4: Lizard\n" +
                               "5: Spock\n");
 
-            for (int level = 0; level < 3; level++)
+            for (int i = 0; i < 3; i++)
             {
-                if (level == 0)
+                Console.WriteLine("Your move!");
+                int playerInput = int.Parse(Console.ReadLine());
+
+                if (playerInput < 1 || playerInput > 5)
                 {
-                    Console.WriteLine("Level 1\n");
-                    computerNames.Add("Penny");
-                }
-                else if (level == 1)
-                {
-                    Console.WriteLine("Level 2\n");
-                    computerNames.Clear();
-                    computerNames.Add("SoftKittyWarmKitty");
-                    computerNames.Add("RajTheSilent");
-                    computerNames.Add("Shelbot9000");
-                    Console.WriteLine(computerNames.Count);
+                    Console.WriteLine("Whats the name of your community college?");
+                    Console.WriteLine("GAME OVER");
+                    break;
                 }
 
-                for (int name = 0; name < computerNames.Count; name++)
+                Console.WriteLine($"You go with {Turn(playerInput)}");
+
+                int computerInput = random.Next(1, 6);
+
+                Console.WriteLine($"Penny goes with {Turn(computerInput)} \n");
+
+                var getWinner = GetRoundWinner(computerInput, playerInput);
+
+                if (getWinner == "player")
                 {
-                    for (int round = 0; round < 3; round++)
-                    {
-                        Console.WriteLine("Your move!");
-                        int playerInput = int.Parse(Console.ReadLine());
-
-                        if (playerInput < 1 || playerInput > 5)
-                        {
-                            Console.WriteLine("Whats the name of your community college?");
-                            Console.WriteLine("GAME OVER");
-                            Console.ReadLine();
-                            return;
-                        }
-
-                        Console.WriteLine($"You go with {Turn(playerInput)}");
-
-                        int computerInput = random.Next(1, 6);
-
-
-                        Console.WriteLine($"{computerNames[name]} goes with {Turn(computerInput)}");
-
-                        var getRoundWinner = GetRoundWinner(computerInput, playerInput);
-
-                        if (getRoundWinner == "player")
-                        {
-                            playerPoints++;
-                        }
-                        else if (getRoundWinner == "computer")
-                        {
-                            computerPoints++;
-                        }
-                        else
-                        {
-                            playerPoints++;
-                            computerPoints++;
-                        }
-                    }
-
-                    if (playerPoints > computerPoints)
-                    {
-                        Console.WriteLine("Player Wins\n");
-                    }
-                    else if (playerPoints < computerPoints)
-                    {
-                        Console.WriteLine($"{computerNames[name]} wins");
-                        return;
-                    }
-                    else
-                    {
-                        Console.WriteLine("It's a tie!");
-                        return;
-                    }
+                    playerPoints++;
+                }
+                else if (getWinner == "computer")
+                {
+                    computerPoints++;
+                }
+                else
+                {
+                    playerPoints++;
+                    computerPoints++;
                 }
             }
+
+            Console.WriteLine(GetGameWinner(playerPoints, computerPoints));
 
             Console.ReadLine();
         }
@@ -138,117 +99,42 @@ namespace RPSLS
 
         static string GetRoundWinner(int computerChoice, int playerChoice)
         {
-            int computerPoints = 0;
-            int playerPoints = 0;
+            var gameRules = new Dictionary<string, List<string>>
+            {
+                { "Rock", new List<string> { "Scissors", "Lizard" } },
+                { "Paper", new List<string> { "Rock", "Spock" } },
+                { "Scissors", new List<string> { "Paper", "Lizard" } },
+                { "Lizard", new List<string> { "Paper", "Spock" } },
+                { "Spock", new List<string> { "Rock", "Scissors" } }
+            };
 
             if (computerChoice == playerChoice)
             {
-                computerPoints++;
-                playerPoints++;
+                return "tie";
             }
-            else
-            {
-                switch (computerChoice)
-                {
-                    case 1:
-                        switch (playerChoice)
-                        {
-                            case 2:
-                                playerPoints++;
-                                break;
-                            case 3:
-                                computerPoints++;
-                                break;
-                            case 4:
-                                computerPoints++;
-                                break;
-                            case 5:
-                                playerPoints++;
-                                break;
-                        }
-                        break;
-                    case 2:
-                        switch (playerChoice)
-                        {
-                            case 1:
-                                computerPoints++;
-                                break;
-                            case 3:
-                                playerPoints++;
-                                break;
-                            case 4:
-                                playerPoints++;
-                                break;
-                            case 5:
-                                computerPoints++;
-                                break;
-                        }
-                        break;
-                    case 3:
-                        switch (playerChoice)
-                        {
-                            case 1:
-                                playerPoints++;
-                                break;
-                            case 2:
-                                computerPoints++;
-                                break;
-                            case 4:
-                                computerPoints++;
-                                break;
-                            case 5:
-                                playerPoints++;
-                                break;
-                        }
-                        break;
-                    case 4:
-                        switch (playerChoice)
-                        {
-                            case 1:
-                                playerPoints++;
-                                break;
-                            case 2:
-                                computerPoints++;
-                                break;
-                            case 3:
-                                playerPoints++;
-                                break;
-                            case 5:
-                                playerPoints++;
-                                break;
-                        }
-                        break;
-                    case 5:
-                        switch (playerChoice)
-                        {
-                            case 1:
-                                computerPoints++;
-                                break;
-                            case 2:
-                                playerPoints++;
-                                break;
-                            case 3:
-                                computerPoints++;
-                                break;
-                            case 4:
-                                playerPoints++;
-                                break;
-                        }
-                        break;
-                }
-            }
-
-            if (playerPoints > computerPoints)
+            else if (gameRules[Turn(playerChoice)].Contains((Turn(computerChoice))))
             {
                 return "player";
             }
-            else if (playerPoints < computerPoints)
+            else
             {
                 return "computer";
             }
+        }
+
+        static string GetGameWinner(int playerPoints, int computerPoints)
+        {
+            if (playerPoints > computerPoints)
+            {
+                return "You win!";
+            }
+            else if (playerPoints < computerPoints)
+            {
+                return "Penny Wins!";
+            }
             else
             {
-                return "tie";
+                return "It's a tie!";
             }
         }
     }
