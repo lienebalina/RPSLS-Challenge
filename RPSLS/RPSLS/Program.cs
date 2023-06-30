@@ -8,8 +8,12 @@ namespace RPSLS
         static void Main(string[] args)
         {
             var random = new Random();
+
+            var computerNames = new List<string>();
+
             int computerPoints = 0;
             int playerPoints = 0;
+
             Console.WriteLine("Welcome to Rock, Paper, Scissors, Lizard, Spock! \n");
             Console.WriteLine("The rules ar obvious: \n");
             Console.WriteLine("\t Scissors cuts Paper,\n" +
@@ -22,8 +26,7 @@ namespace RPSLS
                               "\t Paper disproves Spock,\n" +
                               "\t Spock vaporizes Rock,\n" +
                               "\t and as it always has, Rock crushes Scissors. \n");
-            Console.WriteLine(
-                "It's easy! and before you say something, no, I'm not crazy, mother had me tested. \n");
+           
             Console.WriteLine("Input any number between 1 and 5 \n");
             Console.WriteLine("1: Rock \n" +
                               "2: Paper\n" +
@@ -31,53 +34,77 @@ namespace RPSLS
                               "4: Lizard\n" +
                               "5: Spock\n");
 
-            for (int i = 0; i < 3; i++)
+            for (int level = 0; level < 3; level++)
             {
-                Console.WriteLine("Your move!");
-                int playerInput = int.Parse(Console.ReadLine());
-
-                if (playerInput < 1 || playerInput > 5)
+                if (level == 0)
                 {
-                    Console.WriteLine("Whats the name of your community college?");
-                    Console.WriteLine("GAME OVER");
-                    Console.ReadLine();
-                    break;
+                    Console.WriteLine("Level 1\n");
+                    computerNames.Add("Penny");
+                }
+                else if (level == 1)
+                {
+                    Console.WriteLine("Level 2\n");
+                    computerNames.Clear();
+                    computerNames.Add("SoftKittyWarmKitty");
+                    computerNames.Add("RajTheSilent");
+                    computerNames.Add("Shelbot9000");
+                    Console.WriteLine(computerNames.Count);
                 }
 
-                Console.WriteLine($"you go with {Turn(playerInput)}");
-
-                int computerInput = random.Next(1, 6);
-
-                Console.WriteLine($"computer goes with {Turn(computerInput)}");
-
-                var getWinner = GetWinner(computerInput, playerInput);
-
-                if (getWinner == "player")
+                for (int name = 0; name < computerNames.Count; name++)
                 {
-                    playerPoints++;
-                }
-                else if (getWinner == "computer")
-                {
-                    computerPoints++;
-                }
-                else
-                {
-                    playerPoints++;
-                    computerPoints++;
-                }
-            }
+                    for (int round = 0; round < 3; round++)
+                    {
+                        Console.WriteLine("Your move!");
+                        int playerInput = int.Parse(Console.ReadLine());
 
-            if (playerPoints > computerPoints)
-            {
-                Console.WriteLine("Player wins");
-            }
-            else if (playerPoints < computerPoints)
-            {
-                Console.WriteLine("Computer Wins");
-            }
-            else
-            {
-                Console.WriteLine("TIE");
+                        if (playerInput < 1 || playerInput > 5)
+                        {
+                            Console.WriteLine("Whats the name of your community college?");
+                            Console.WriteLine("GAME OVER");
+                            Console.ReadLine();
+                            return;
+                        }
+
+                        Console.WriteLine($"You go with {Turn(playerInput)}");
+
+                        int computerInput = random.Next(1, 6);
+
+
+                        Console.WriteLine($"{computerNames[name]} goes with {Turn(computerInput)}");
+
+                        var getRoundWinner = GetRoundWinner(computerInput, playerInput);
+
+                        if (getRoundWinner == "player")
+                        {
+                            playerPoints++;
+                        }
+                        else if (getRoundWinner == "computer")
+                        {
+                            computerPoints++;
+                        }
+                        else
+                        {
+                            playerPoints++;
+                            computerPoints++;
+                        }
+                    }
+
+                    if (playerPoints > computerPoints)
+                    {
+                        Console.WriteLine("Player Wins\n");
+                    }
+                    else if (playerPoints < computerPoints)
+                    {
+                        Console.WriteLine($"{computerNames[name]} wins");
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("It's a tie!");
+                        return;
+                    }
+                }
             }
 
             Console.ReadLine();
@@ -109,7 +136,7 @@ namespace RPSLS
             return turn;
         }
 
-        static string GetWinner(int computerChoice, int playerChoice)
+        static string GetRoundWinner(int computerChoice, int playerChoice)
         {
             int computerPoints = 0;
             int playerPoints = 0;
