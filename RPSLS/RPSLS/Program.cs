@@ -10,12 +10,16 @@
             {
                 "SoftKittyWarmKitty",
                 "RajTheSilent",
-                "Shelbot9000"
+                "Shelbot9000",
+                "StuartTheComicBookGuy",
+                "MoonPie",
+                "SheldorTheConqueror",
+                "ThatsMySpot",
+                "EinsteinVonBrainstorm",
+                "IWentToSpaceOnce"
             };
 
-            int computerPoints = 0;
-            int playerPoints = 0;
-
+            var winnerList = new List<string>();
 
             Console.WriteLine("Welcome to Rock, Paper, Scissors, Lizard, Spock Level 2! \n");
 
@@ -38,8 +42,12 @@
                               "4: Lizard\n" +
                               "5: Spock\n");
 
-            var roundCount = 3;
-            var playerCount = 3;
+            Console.WriteLine("How many rounds (from 1 to 5) should players do with each other?");
+            var roundCount = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("How many computer players (from 1 to 9)?");
+            var playerCount = int.Parse(Console.ReadLine());
+            var count = playerCount;
             
             for (int i = 0; i < playerCount; i++)
             {
@@ -54,47 +62,72 @@
                         Console.WriteLine("GAME OVER");
                         return;
                     }
-
+                    
                     Console.WriteLine($"You go with {Turn(playerInput)}");
 
                     int computerInput = random.Next(1, 6);
                     
                     Console.WriteLine($"{computerNames[i]} goes with {Turn(computerInput)} \n");
 
-                    var roundWinner = GetRoundWinner(computerInput, playerInput);
+                    var roundWinner = GetRoundWinner(computerInput, playerInput, computerNames[i], "player");
 
-                    if (roundWinner == "player")
+                    if (roundWinner == "tie")
                     {
-                        playerPoints++;
-                    }
-                    else if (roundWinner == "computer")
-                    {
-                        computerPoints++;
+                        winnerList.Add("player");
+                        winnerList.Add($"{computerNames[i]}");
                     }
                     else
                     {
-                        playerPoints++;
-                        computerPoints++;
+                        winnerList.Add(roundWinner);
                     }
                 }
+            }
+            
+            while (playerCount > 1)
+            {
+                for (int i = 0; i < playerCount-1; i++)
+                {
+                    for (int j = 0; j < roundCount; j++)
+                    {
+                        var computerMove = random.Next(1, 6);
 
-                if (playerPoints > computerPoints)
-                {
-                    Console.WriteLine("You win\n");
+                        //Console.WriteLine($"{computerNames[playerCount-1]} goes with {Turn(computerMove)}");
+
+                        var otherComputerMove = random.Next(1, 6);
+
+                        //Console.WriteLine($"{computerNames[i]} goes with {Turn(otherComputerMove)} \n");
+
+                        var roundWinner = GetRoundWinner(computerMove, otherComputerMove, computerNames[playerCount-1],
+                            computerNames[i]);
+
+                        if (roundWinner == "tie")
+                        {
+                            winnerList.Add($"{computerNames[playerCount - 1]}");
+                            winnerList.Add($"{computerNames[i]}");
+                        }
+                        else
+                        {
+                            winnerList.Add(roundWinner);
+                        }
+
+                        //Console.ReadLine();
+                    }
                 }
-                else if (playerPoints < computerPoints)
-                {
-                    Console.WriteLine($"{computerNames[i]} wins");
-                    return;
-                }
-                else
-                {
-                    Console.WriteLine("It's a tie!"); 
-                    return;
-                }
+                playerCount--;
             }
 
-            Console.WriteLine("You won, wow");
+            Console.WriteLine("The results are in!\n");
+
+            int playerPoints = winnerList.FindAll(k => k == "player").Count;
+            Console.WriteLine($"Player points: {playerPoints}");
+
+            for (int i = 0; i < count; i++)
+            {
+                var name = computerNames[i];
+                int computerPoints = winnerList.FindAll(k => k == name).Count;
+                Console.WriteLine($"{name} points: {computerPoints}");
+            }
+
             Console.ReadLine();
         }
 
@@ -124,7 +157,7 @@
             return turn;
         }
 
-        static string GetRoundWinner(int computerChoice, int playerChoice)
+        static string GetRoundWinner(int player1, int player2, string player1Name, string player2Name)
         {
             var gameRules = new Dictionary<string, List<string>>
             {
@@ -135,17 +168,17 @@
                 { "Spock", new List<string> { "Rock", "Scissors" } }
             };
 
-            if (computerChoice == playerChoice)
+            if (player1 == player2)
             {
                 return "tie";
             }
-            else if (gameRules[Turn(playerChoice)].Contains((Turn(computerChoice))))
+            else if (gameRules[Turn(player2)].Contains((Turn(player1))))
             {
-                return "player";
+                return $"{player2Name}";
             }
             else
             {
-                return "computer";
+                return $"{player1Name}";
             }
         }
     }
