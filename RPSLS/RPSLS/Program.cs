@@ -5,12 +5,19 @@
         static void Main(string[] args)
         {
             var random = new Random();
-            
+
+            var computerNames = new List<string>()
+            {
+                "SoftKittyWarmKitty",
+                "RajTheSilent",
+                "Shelbot9000"
+            };
+
             int computerPoints = 0;
             int playerPoints = 0;
 
 
-            Console.WriteLine("Welcome to Rock, Paper, Scissors, Lizard, Spock! \n");
+            Console.WriteLine("Welcome to Rock, Paper, Scissors, Lizard, Spock Level 2! \n");
 
             Console.WriteLine("The rules ar obvious: \n" +
                               "\t Scissors cuts Paper,\n" +
@@ -31,43 +38,63 @@
                               "4: Lizard\n" +
                               "5: Spock\n");
 
-            for (int i = 0; i < 3; i++)
+            var roundCount = 3;
+            var playerCount = 3;
+            
+            for (int i = 0; i < playerCount; i++)
             {
-                Console.WriteLine("Your move!");
-                int playerInput = int.Parse(Console.ReadLine());
-
-                if (playerInput < 1 || playerInput > 5)
+                for (int j = 0; j < roundCount; j++) 
                 {
-                    Console.WriteLine("Whats the name of your community college?");
-                    Console.WriteLine("GAME OVER");
-                    break;
+                    Console.WriteLine("Your move!");
+                    int playerInput = int.Parse(Console.ReadLine());
+
+                    if (playerInput < 1 || playerInput > 5)
+                    {
+                        Console.WriteLine("Whats the name of your community college?");
+                        Console.WriteLine("GAME OVER");
+                        return;
+                    }
+
+                    Console.WriteLine($"You go with {Turn(playerInput)}");
+
+                    int computerInput = random.Next(1, 6);
+                    
+                    Console.WriteLine($"{computerNames[i]} goes with {Turn(computerInput)} \n");
+
+                    var roundWinner = GetRoundWinner(computerInput, playerInput);
+
+                    if (roundWinner == "player")
+                    {
+                        playerPoints++;
+                    }
+                    else if (roundWinner == "computer")
+                    {
+                        computerPoints++;
+                    }
+                    else
+                    {
+                        playerPoints++;
+                        computerPoints++;
+                    }
                 }
 
-                Console.WriteLine($"You go with {Turn(playerInput)}");
-
-                int computerInput = random.Next(1, 6);
-
-                Console.WriteLine($"Penny goes with {Turn(computerInput)} \n");
-
-                var getWinner = GetRoundWinner(computerInput, playerInput);
-
-                if (getWinner == "player")
+                if (playerPoints > computerPoints)
                 {
-                    playerPoints++;
+                    Console.WriteLine("You win\n");
                 }
-                else if (getWinner == "computer")
+                else if (playerPoints < computerPoints)
                 {
-                    computerPoints++;
+                    Console.WriteLine($"{computerNames[i]} wins");
+                    return;
                 }
                 else
                 {
-                    playerPoints++;
-                    computerPoints++;
+                    Console.WriteLine("It's a tie!"); 
+                    return;
                 }
             }
 
-            Console.WriteLine(GetGameWinner(playerPoints, computerPoints));
-
+            Console.WriteLine("You won, wow");
             Console.ReadLine();
         }
 
@@ -119,22 +146,6 @@
             else
             {
                 return "computer";
-            }
-        }
-
-        static string GetGameWinner(int playerPoints, int computerPoints)
-        {
-            if (playerPoints > computerPoints)
-            {
-                return "You win!";
-            }
-            else if (playerPoints < computerPoints)
-            {
-                return "Penny Wins!";
-            }
-            else
-            {
-                return "It's a tie!";
             }
         }
     }
