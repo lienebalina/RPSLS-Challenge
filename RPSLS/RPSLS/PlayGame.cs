@@ -12,10 +12,12 @@ namespace RPSLS
         private Random _random = new Random();
         private int _computerPoints;
         private int _playerPoints;
+        private Player _player;
 
         public PlayGame()
         {
             _settings = new GameSettings(computerCount: 0, roundCount: 0);
+            _player = new Player();
         }
 
         public void SetGameSettings(GameSettings settings)
@@ -35,8 +37,7 @@ namespace RPSLS
             {
                 for (int i = 0; i < _settings.RoundCount; i++)
                 {
-                    Console.WriteLine("Your move!");
-                    int playerInput = int.Parse(Console.ReadLine());
+                    int playerInput = _player.TakePlayerInput();
 
                     if (playerInput < 1 || playerInput > 5)
                     {
