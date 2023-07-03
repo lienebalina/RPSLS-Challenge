@@ -24,7 +24,8 @@ namespace RPSLS
 
         public PlayGame()
         {
-
+            _settings = new GameSettings(computerCount: 0, roundCount: 0);
+            _player = new Player();
         }
 
         public void SetGameSettings(GameSettings settings)
