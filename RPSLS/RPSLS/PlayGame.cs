@@ -6,18 +6,25 @@ using System.Threading.Tasks;
 
 namespace RPSLS
 {
-    public class PlayGame
+    public class PlayGame : IPlayGame
     {
         private GameSettings _settings;
         private Random _random = new Random();
         private int _computerPoints;
         private int _playerPoints;
-        private Player _player;
+        private IPlayer _player;
+
+        public PlayGame(IPlayer player, Random random)
+        {
+            _random = random;
+            _player = player;
+            _settings = new GameSettings(computerCount: 0, roundCount: 0);
+            _player = new Player();
+        }
 
         public PlayGame()
         {
-            _settings = new GameSettings(computerCount: 0, roundCount: 0);
-            _player = new Player();
+
         }
 
         public void SetGameSettings(GameSettings settings)
@@ -30,6 +37,8 @@ namespace RPSLS
                 _settings.RoundCount = settings.RoundCount;
             }
         }
+
+        public GameSettings Settings => _settings;
 
         public void RunGame()
         {
@@ -60,7 +69,7 @@ namespace RPSLS
             }
         }
         
-        private string Turn(int num)
+        public string Turn(int num)
         {
             var turn = "";
 
@@ -86,7 +95,7 @@ namespace RPSLS
             return turn;
         }
 
-        private void GetRoundWinner(int computerChoice, int playerChoice)
+        public void GetRoundWinner(int computerChoice, int playerChoice)
         {
             var gameRules = new Dictionary<string, List<string>>
             {
@@ -112,7 +121,7 @@ namespace RPSLS
             }
         }
 
-        private string GetGameWinner(int playerPoints, int computerPoints)
+        public string GetGameWinner(int playerPoints, int computerPoints)
         {
             if (playerPoints > computerPoints)
             {

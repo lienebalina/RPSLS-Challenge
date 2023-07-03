@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RPSLS
 {
-    public class Player
+    public class Player : IPlayer
     {
         private int _playerInput;
 
