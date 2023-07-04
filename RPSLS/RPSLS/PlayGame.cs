@@ -6,19 +6,40 @@ using System.Threading.Tasks;
 
 namespace RPSLS
 {
-    public class PlayGame
+    public class PlayGame : IPlayGame
     {
         private GameSettings _settings;
         private Random _random = new Random();
-        private List<string> _computerNames;
-        private Player _player;
+        public List<string> ComputerNames;
+        private IPlayer _player;
         private List<string> _winnerList;
         private int _computerCount;
+
+        public PlayGame(IPlayer player, Random random)
+        {
+            _random = random;
+            _player = player;
+            _settings = new GameSettings(computerCount: 0, roundCount: 0);
+            ComputerNames = new List<string>()
+            {
+                "SoftKittyWarmKitty",
+                "RajTheSilent",
+                "Shelbot9000",
+                "StuartTheComicBookGuy",
+                "MoonPie",
+                "SheldorTheConqueror",
+                "ThatsMySpot",
+                "EinsteinVonBrainstorm",
+                "IWentToSpaceOnce"
+            };
+            _player = new Player();
+            _winnerList = new List<string>();
+        }
 
         public PlayGame()
         {
             _settings = new GameSettings(computerCount: 0, roundCount: 0);
-            _computerNames = new List<string>()
+            ComputerNames = new List<string>()
             {
                 "SoftKittyWarmKitty",
                 "RajTheSilent",
@@ -47,6 +68,8 @@ namespace RPSLS
             }
         }
 
+        public GameSettings Settings => _settings;
+
         public void RunGame()
         {
             for (int c = 0; c < _settings.ComputerCount; c++)
@@ -66,9 +89,9 @@ namespace RPSLS
 
                     int computerInput = _random.Next(1, 6);
 
-                    Console.WriteLine($"{_computerNames[c]}  goes with {Turn(computerInput)} \n");
+                    Console.WriteLine($"{ComputerNames[c]} goes with {Turn(computerInput)} \n");
 
-                    Console.WriteLine(GetRoundWinner(computerInput, playerInput, _computerNames[c], "player"));
+                    Console.WriteLine(GetRoundWinner(computerInput, playerInput, ComputerNames[c], "player"));
 
                 }
             }
@@ -90,21 +113,26 @@ namespace RPSLS
                     {
                         var computerMove = _random.Next(1, 6);
 
-                        //Console.WriteLine($"{_computerNames[_settings.ComputerCount - 1]} goes with {Turn(computerMove)}");
+                        Console.WriteLine($"{ComputerNames[_settings.ComputerCount - 1]} goes with {Turn(computerMove)}");
 
                         var otherComputerMove = _random.Next(1, 6);
 
-                        //Console.WriteLine($"{_computerNames[i]} goes with {Turn(otherComputerMove)}");
+                        Console.WriteLine($"{ComputerNames[i]} goes with {Turn(otherComputerMove)}");
 
-                        var roundWinner = GetRoundWinner(computerMove, otherComputerMove, _computerNames[_settings.ComputerCount - 1],
-                            _computerNames[i]);
+                        var roundWinner = GetRoundWinner(computerMove, otherComputerMove, ComputerNames[_settings.ComputerCount - 1],
+                            ComputerNames[i]);
                     }
                 }
                 _settings.ComputerCount--;
             }
         }
 
-        private string Turn(int num)
+        public void SetRandom(Random random)
+        {
+            _random = random;
+        }
+
+        public string Turn(int num)
         {
             var turn = "";
 
@@ -130,7 +158,7 @@ namespace RPSLS
             return turn;
         }
 
-        private string GetRoundWinner(int player1, int player2, string player1Name, string player2Name)
+        public string GetRoundWinner(int player1, int player2, string player1Name, string player2Name)
         {
             var gameRules = new Dictionary<string, List<string>>
             {
@@ -162,7 +190,7 @@ namespace RPSLS
             }
         }
 
-        private void GetGameResults()
+        public void GetGameResults()
         {
             Console.WriteLine("The results are in!\n");
 
@@ -171,7 +199,7 @@ namespace RPSLS
 
             for (int i = 0; i < _computerCount; i++)
             {
-                var name = _computerNames[i];
+                var name = ComputerNames[i];
                 int computerPoints = _winnerList.FindAll(k => k == name).Count;
                 Console.WriteLine($"{name} points: {computerPoints}");
             }
