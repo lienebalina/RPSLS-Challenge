@@ -6,19 +6,33 @@ using System.Threading.Tasks;
 
 namespace RPSLS
 {
-    public class PlayGame
+    public class PlayGame : IPlayGame
     {
         private GameSettings _settings;
         private Random _random = new Random();
         private int _computerPoints;
         private int _playerPoints;
-        private List<string> _computerNames;
-        private Player _player;
+        public List<string> ComputerNames;
+        private IPlayer _player;
+
+        public PlayGame(IPlayer player, Random random)
+        {
+            _random = random;
+            _player = player;
+            _settings = new GameSettings(computerCount: 0, roundCount: 0);
+            ComputerNames = new List<string>()
+            {
+                "SoftKittyWarmKitty",
+                "RajTheSilent",
+                "Shelbot9000"
+            };
+            _player = new Player();
+        }
 
         public PlayGame()
         {
             _settings = new GameSettings(computerCount: 0, roundCount: 0);
-            _computerNames = new List<string>()
+            ComputerNames = new List<string>()
             {
                 "SoftKittyWarmKitty",
                 "RajTheSilent",
@@ -37,6 +51,8 @@ namespace RPSLS
                 _settings.RoundCount = settings.RoundCount;
             }
         }
+
+        public GameSettings Settings => _settings;
 
         public void RunGame()
         {
@@ -57,13 +73,13 @@ namespace RPSLS
 
                     int computerInput = _random.Next(1, 6);
 
-                    Console.WriteLine($"{_computerNames[c]}  goes with {Turn(computerInput)} \n");
+                    Console.WriteLine($"{ComputerNames[c]} goes with {Turn(computerInput)} \n");
 
                     GetRoundWinner(computerInput, playerInput);
 
                 }
 
-                Console.WriteLine(GetGameWinner(_playerPoints, _computerPoints, _computerNames[c]));
+                Console.WriteLine(GetGameWinner(_playerPoints, _computerPoints, ComputerNames[c]));
 
                 if (_playerPoints < _computerPoints || _playerPoints == _computerPoints)
                 {
@@ -74,7 +90,7 @@ namespace RPSLS
             Console.WriteLine("You won, wow");
         }
 
-        private string Turn(int num)
+        public string Turn(int num)
         {
             var turn = "";
 
@@ -100,7 +116,7 @@ namespace RPSLS
             return turn;
         }
 
-        private void GetRoundWinner(int computerChoice, int playerChoice)
+        public void GetRoundWinner(int computerChoice, int playerChoice)
         {
             var gameRules = new Dictionary<string, List<string>>
             {
@@ -126,7 +142,7 @@ namespace RPSLS
             }
         }
 
-        private string GetGameWinner(int playerPoints, int computerPoints, string computerName)
+        public string GetGameWinner(int playerPoints, int computerPoints, string computerName)
         {
             if (playerPoints > computerPoints)
             {
